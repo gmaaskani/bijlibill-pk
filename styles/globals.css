@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body{font-family: Inter, ui-sans-serif, system-ui; background:#f5f5f4;}
+.dark body{background:#18181b;}
