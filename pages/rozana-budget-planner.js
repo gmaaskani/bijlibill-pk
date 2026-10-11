@@ -100,8 +100,8 @@ export default function Rozana(){
               </div>
             )}
 
-            <div className="mt-6 overflow-auto rounded-[12px] border border-zinc-200 dark:border-zinc-800">
-              <table className="w-full text-[12px]">
+            <div className="mt-6 overflow-x-auto rounded-[12px] border border-zinc-200 dark:border-zinc-800">
+              <table className="min-w-[600px] w-full text-[12px]">
                 <thead className="bg-zinc-50 dark:bg-zinc-800 text-[11px] font-bold uppercase tracking-widest">
                   <tr>
                     <th className="p-2.5 text-left">Date</th>
