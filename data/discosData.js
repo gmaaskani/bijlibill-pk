@@ -1,0 +1,12 @@
+export const discosData = {
+  lesco: { name: 'LESCO', full: 'Lahore Electric Supply Company', city: 'Lahore', region: 'Lahore, Kasur, Sheikhupura, Okara', fixedProtected: 300, fixedNon: 1000, checkBillUrl: 'https://lesco-bill.com.pk', slug: 'lesco', cityUrdu: 'لاہور' },
+  mepco: { name: 'MEPCO', full: 'Multan Electric Power Company', city: 'Multan', region: 'Multan, Bahawalpur, DG Khan', fixedProtected: 300, fixedNon: 800, checkBillUrl: 'https://mepcobill.pk', slug: 'mepco', cityUrdu: 'ملتان' },
+  fesco: { name: 'FESCO', full: 'Faisalabad Electric Supply Company', city: 'Faisalabad', region: 'Faisalabad, Sargodha, Jhang', fixedProtected: 300, fixedNon: 800, checkBillUrl: 'https://fesco-bill.pk', slug: 'fesco', cityUrdu: 'فیصل آباد' },
+  iesco: { name: 'IESCO', full: 'Islamabad Electric Supply Company', city: 'Islamabad', region: 'Islamabad, Rawalpindi, Attock, Chakwal', fixedProtected: 300, fixedNon: 1000, checkBillUrl: 'https://iesco-bill.pk', slug: 'iesco', cityUrdu: 'اسلام آباد' },
+  'k-electric': { name: 'K-Electric', full: 'K-Electric', city: 'Karachi', region: 'Karachi and surroundings', fixedProtected: 300, fixedNon: 1200, checkBillUrl: 'https://ke-bill.pk', slug: 'k-electric', cityUrdu: 'کراچی' },
+  gepco: { name: 'GEPCO', full: 'Gujranwala Electric Power Company', city: 'Gujranwala', region: 'Gujranwala, Gujrat, Sialkot', fixedProtected: 300, fixedNon: 800, checkBillUrl: 'https://gepco-bill.pk', slug: 'gepco', cityUrdu: 'گوجرانوالہ' },
+  pesco: { name: 'PESCO', full: 'Peshawar Electric Supply Company', city: 'Peshawar', region: 'Peshawar, Mardan, Swat', fixedProtected: 300, fixedNon: 600, checkBillUrl: 'https://pesco-bill.pk', slug: 'pesco', cityUrdu: 'پشاور' },
+  hesco: { name: 'HESCO', full: 'Hyderabad Electric Supply Company', city: 'Hyderabad', region: 'Hyderabad, Mirpurkhas', fixedProtected: 300, fixedNon: 800, checkBillUrl: 'https://hesco-bill.pk', slug: 'hesco', cityUrdu: 'حیدرآباد' },
+  sepco: { name: 'SEPCO', full: 'Sukkur Electric Power Company', city: 'Sukkur', region: 'Sukkur, Larkana, Jacobabad', fixedProtected: 300, fixedNon: 800, checkBillUrl: 'https://sepco-bill.pk', slug: 'sepco', cityUrdu: 'سکھر' },
+  qesco: { name: 'QESCO', full: 'Quetta Electric Supply Company', city: 'Quetta', region: 'Quetta, Balochistan', fixedProtected: 300, fixedNon: 600, checkBillUrl: 'https://qesco-bill.pk', slug: 'qesco', cityUrdu: 'کوئٹہ' },
+}
