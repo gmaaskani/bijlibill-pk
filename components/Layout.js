@@ -67,6 +67,10 @@ export default function Layout({ children }) {
         />
         <meta name="author" content="Ghulam Muhammad" />
         <meta name="robots" content="index, follow" />
+{/* PWA - Add these 3 lines */}
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1b4d3e" />
+  <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </Head>
 
       <header className="sticky top-0 z-50 bg-[#1b4d3e] border-b border-white/10">
