@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { nepraTariff } from '../../data/nepraTariff'
-import { discosData } from '../../data/discosData'
+import { nepraTariff } from '../../../data/nepraTariff'
+import { discosData } from '../../../data/discosData'
 
 function Yi(units, isProtected = false) {
   const usage = Math.max(0, Number(units) || 0)
