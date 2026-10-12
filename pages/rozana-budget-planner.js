@@ -1,4 +1,3 @@
-
 import Head from 'next/head'
 import { useState, useEffect, useMemo } from 'react'
 
@@ -22,12 +21,12 @@ export default function Rozana(){
     for(let i=0;i<sorted.length;i++){
       const curr = sorted[i]
       const prev = i>0? sorted[i-1]: null
-      const daily = prev ? curr.reading - prev.reading : 0
+      const daily = prev? curr.reading - prev.reading : 0
       if(i>0) total += daily
-      const daysPassed = i // approx
-      const proj = daysPassed>0 ? (total/daysPassed)*30 : 0
+      const daysPassed = i
+      const proj = daysPassed>0? (total/daysPassed)*30 : 0
       const remaining = 200 - total
-      const status = total>200 ? 'danger' : proj>200 ? 'warning' : 'safe'
+      const status = total>200? 'danger' : proj>200? 'warning' : 'safe'
       rows.push({ id: curr.id, date: curr.date, reading: curr.reading, daily, total, proj, remaining, status })
     }
     const latest = rows[rows.length-1]
@@ -64,8 +63,8 @@ export default function Rozana(){
           <p className="mt-2 text-[13px] opacity-70">Rozana sham ko meter dekho, reading likho. localStorage key bijli-rozana-v1, ledger logic se projected bill.</p>
         </div>
 
-        <div className="grid md:grid-cols-[1.5fr_0.8fr] gap-4">
-          <div className="rounded-[24px] border p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+        <div className="grid grid-cols-1 md:grid-cols-[1.5fr_0.8fr] gap-4">
+          <div className="rounded-[24px] border p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 w-full max-w-full overflow-hidden">
             <div className="flex justify-between items-center">
               <h3 className="font-bold">Meter Ledger (bijli-rozana-v1)</h3>
               <div className="flex gap-2">
@@ -100,37 +99,57 @@ export default function Rozana(){
               </div>
             )}
 
-            <div className="mt-6 overflow-auto rounded-[12px] border border-zinc-200 dark:border-zinc-800">
-              <table className="w-full text-[12px]">
-                <thead className="bg-zinc-50 dark:bg-zinc-800 text-[11px] font-bold uppercase tracking-widest">
-                  <tr>
-                    <th className="p-2.5 text-left">Date</th>
-                    <th className="p-2.5">Reading</th>
-                    <th className="p-2.5">Daily</th>
-                    <th className="p-2.5">Total</th>
-                    <th className="p-2.5">Proj</th>
-                    <th className="p-2.5">Status</th>
-                    <th className="p-2.5"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {computed.rows.map(w=>
-                    <tr key={w.id} className="border-t border-zinc-100 dark:border-zinc-800 font-mono">
-                      <td className="p-2.5">{w.date}</td>
-                      <td className="p-2.5 text-center">{w.reading}</td>
-                      <td className="p-2.5 text-center">{w.daily}</td>
-                      <td className="p-2.5 text-center">{w.total}</td>
-                      <td className="p-2.5 text-center">{w.proj.toFixed(0)}</td>
-                      <td className="p-2.5 text-center">
+            <div className="mt-6 w-full rounded-[12px] border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+              {/* Mobile Cards - Phone Only */}
+              <div className="md:hidden divide-y divide-zinc-100 dark:divide-zinc-800">
+                {computed.rows.map(w=>
+                  <div key={w.id} className="p-3 flex justify-between items-center gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-[12px]">{w.date} <span className="opacity-50 font-mono">• {w.reading}</span></div>
+                      <div className="text-[11px] opacity-60 font-mono mt-1">Daily: {w.daily} | Total: {w.total} | Proj: {w.proj.toFixed(0)}</div>
+                      <div className="mt-1">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${w.status==='danger'?'bg-red-100 text-red-600': w.status==='warning'?'bg-amber-100 text-amber-600':'bg-green-100 text-green-700'}`}>{w.status}</span>
-                      </td>
-                      <td className="p-2.5">
-                        <button onClick={()=> setEntries(entries.filter(f=> f.id!==w.id))} className="text-red-500">x</button>
-                      </td>
+                      </div>
+                    </div>
+                    <button onClick={()=> setEntries(entries.filter(f=> f.id!==w.id))} className="text-red-500 px-2 text-[18px]">x</button>
+                  </div>
+                )}
+                {computed.rows.length===0 && <div className="p-4 text-[12px] opacity-60 text-center">No entries yet</div>}
+              </div>
+
+              {/* Desktop Table - Laptop Only */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-[12px]">
+                  <thead className="bg-zinc-50 dark:bg-zinc-800 text-[11px] font-bold uppercase tracking-widest">
+                    <tr>
+                      <th className="p-2.5 text-left">Date</th>
+                      <th className="p-2.5">Reading</th>
+                      <th className="p-2.5">Daily</th>
+                      <th className="p-2.5">Total</th>
+                      <th className="p-2.5">Proj</th>
+                      <th className="p-2.5">Status</th>
+                      <th className="p-2.5"></th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {computed.rows.map(w=>
+                      <tr key={w.id} className="border-t border-zinc-100 dark:border-zinc-800 font-mono">
+                        <td className="p-2.5">{w.date}</td>
+                        <td className="p-2.5 text-center">{w.reading}</td>
+                        <td className="p-2.5 text-center">{w.daily}</td>
+                        <td className="p-2.5 text-center">{w.total}</td>
+                        <td className="p-2.5 text-center">{w.proj.toFixed(0)}</td>
+                        <td className="p-2.5 text-center">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${w.status==='danger'?'bg-red-100 text-red-600': w.status==='warning'?'bg-amber-100 text-amber-600':'bg-green-100 text-green-700'}`}>{w.status}</span>
+                        </td>
+                        <td className="p-2.5">
+                          <button onClick={()=> setEntries(entries.filter(f=> f.id!==w.id))} className="text-red-500">x</button>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="mt-6 p-4 rounded-[12px] bg-[#f0fdf4] dark:bg-[#143a2f] border border-green-200">
