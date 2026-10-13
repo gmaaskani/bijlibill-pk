@@ -1,24 +1,37 @@
+# bijlibill.pk
 
-# BijliBill.pk - Next.js Pages Router - Exact UI
+Live: https://bijlibill.pk
 
-This is converted from your single-file HTML React artifact EXACT same UI.
+I built this because electricity bills in Pakistan are impossible to understand. So many hidden taxes - FPA, QTA, FC, Duty, GST. I wanted a tool that actually explains the bill in simple language.
 
-## Run
-npm install
-npm run dev -> http://localhost:3000
+### What I built
 
-## Structure
-- pages/_app.js - Layout with sticky header bg-[#1b4d3e], logo B, BijliBill.pk, 2026 Edition, nav Home, Protected 200, Tax Decoder, Solar 2026, Rozana Planner, dark toggle Sun/Moon, mobile lg:hidden, footer bg-[#0f2e25] with disclaimer NOT affiliated...
-- pages/index.js - hero rounded-[32px] bg-[#1b4d3e] p-6 md:p-12 + 4 cards rounded-[24px] border p-6 md:p-7 bg-[#a3e635] text-[#1b4d3e] hover:scale-[1.01] hover:shadow-xl + SEO section Bijli ke Rules Samjho
-- pages/protected-200-unit-calculator.js - Yi(e,n) slabs Protected 10.54/13.01 Non-Protected 22.44-47.69, danger meter, daily avg, remaining, WhatsApp share
-- pages/bill-tax-decoder.js - FPA Rs 3.5, QTA 1.5, FC 3.23, Duty 1.5%, GST 18%
-- pages/solar-net-billing-calculator.js - Import 52 Export 11 Ratio 4.7:1 SRO 251(I)/2026
-- pages/rozana-budget-planner.js - localStorage bijli-rozana-v1, ledger, CSV export, table
-- pages/programmatic.js - DISCO param, units param, internal linking
-- pages/[disco]/[units].js - getServerSideProps isProtected logic, 5000 pages, text switching to avoid duplicate
+**Protected Bill Calculator**
+Checks if you are in protected category (up to 200 units) or not. Protected slab is Rs 10.54, non-protected is Rs 22.44 to 47.69. Shows warning when you are about to lose protection.
 
-## Colors exact
-#1b4d3e primary, #a3e635 lime, #0f2e25 footer dark
+**Bill Tax Decoder**
+You enter units and it breaks down your full bill - Fuel Price Adjustment, Quarterly Adjustment, Fixed Charges, Electricity Duty, GST. Shows exactly where your money is going.
 
-## No changes
-All classNames kept same as original: rounded- bg-[#1b4d3e] p-6 md:p-12, rounded- border p-6 md:p-7, bg-[#a3e635] text-[#1b4d3e], hover:scale-[1.01] hover:shadow-xl, text- font-bold uppercase tracking-widest opacity-60
+**Solar Net Billing 2026**
+For the new SRO 251(I)/2026 rule. New ratio is 4.7:1 where import is Rs 52 and export is Rs 11. I made this because no other calculator had updated logic.
+
+**Rozana Budget Planner**
+A simple daily tracker that saves in your browser, no account needed. You can add daily usage and export to CSV.
+
+Also made programmatic pages for every DISCO - LESCO, K-Electric, MEPCO etc with different unit counts. Each page has its own calculation.
+
+### Tech I used
+
+- **Next.js 14.2.5 Pages Router** - Used getServerSideProps for dynamic DISCO pages
+- **Tailwind CSS** - Custom theme with #1b4d3e and #a3e635, 32px hero, 24px cards
+- **PWA** - Installable on phone and desktop, custom install button, offline support, service worker
+- **LocalStorage** - For dark mode and budget planner, no database needed
+- **FormSubmit** - For contact form without backend
+- **Cloudflare + Vercel** - Domain, email routing for info@bijlibill.pk, hosting
+
+All calculation logic is in pure JavaScript, runs on client side. No data is sent anywhere.
+
+This is an independent project, not affiliated with any DISCO or NEPRA.
+
+Built by Ghulam Muhammad - Karachi
+info@bijlibill.pk
