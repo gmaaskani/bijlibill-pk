@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -8,20 +7,27 @@ export default function Layout({ children }) {
   const [dark, setDark] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [showInstall, setShowInstall] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
-
     const saved = localStorage.getItem('bijli-dark')
     if (saved === 'true') setDark(true)
+
+    const handler = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setShowInstall(true)
+    }
+    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
   useEffect(() => {
     if (!mounted) return
-
     localStorage.setItem('bijli-dark', dark)
-
     if (dark) {
       document.documentElement.classList.add('dark')
     } else {
@@ -35,7 +41,6 @@ export default function Layout({ children }) {
 
   const navLink = (href, label) => {
     const active = router.pathname === href
-
     return (
       <Link
         href={href}
@@ -67,10 +72,10 @@ export default function Layout({ children }) {
         />
         <meta name="author" content="Ghulam Muhammad" />
         <meta name="robots" content="index, follow" />
-{/* PWA - Add these 3 lines */}
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#1b4d3e" />
-  <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1b4d3e" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="icon" href="/icon-192x192.png" />
       </Head>
 
       <header className="sticky top-0 z-50 bg-[#1b4d3e] border-b border-white/10">
@@ -79,11 +84,9 @@ export default function Layout({ children }) {
             <div className="w-8 h-8 rounded-full bg-[#a3e635] flex items-center justify-center text-[#1b4d3e] font-black">
               B
             </div>
-
             <span className="font-black text-white tracking-tight">
               BijliBill.pk
             </span>
-
             <span className="text-xs bg-white/10 px-2 py-0.5 rounded-full text-white ml-1">
               2026 Edition
             </span>
@@ -98,6 +101,19 @@ export default function Layout({ children }) {
           </nav>
 
           <div className="flex items-center gap-2">
+            {showInstall && (
+              <button
+                onClick={async () => {
+                  if (!deferredPrompt) return
+                  deferredPrompt.prompt()
+                  const { outcome } = await deferredPrompt.userChoice
+                  if (outcome === 'accepted') setShowInstall(false)
+                }}
+                className="hidden lg:flex px-3 py-1.5 rounded-full font-bold bg-[#a3e635] text-[#1b4d3e]"
+              >
+                Install
+              </button>
+            )}
             <button
               onClick={() => setDark(!dark)}
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -105,7 +121,6 @@ export default function Layout({ children }) {
             >
               {dark ? '☀' : '🌙'}
             </button>
-
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -119,51 +134,26 @@ export default function Layout({ children }) {
 
         {mobileOpen && (
           <div className="lg:hidden bg-[#0f2e25] border-t border-white/10 px-4 py-4 space-y-2">
-            <Link href="/" className="block py-2 text-white font-bold">
-              Home
-            </Link>
-
-            <Link
-              href="/protected-200-unit-calculator"
-              className="block py-2 text-white/80"
-            >
-              Protected 200 Calculator
-            </Link>
-
-            <Link
-              href="/bill-tax-decoder"
-              className="block py-2 text-white/80"
-            >
-              Bill Tax Decoder
-            </Link>
-
-            <Link
-              href="/solar-net-billing-calculator"
-              className="block py-2 text-white/80"
-            >
-              Solar Net Billing 2026
-            </Link>
-
-            <Link
-              href="/rozana-budget-planner"
-              className="block py-2 text-white/80"
-            >
-              Rozana Budget Planner
-            </Link>
-
-            <Link
-              href="/about-us"
-              className="block py-2 text-white/80"
-            >
-              About Us
-            </Link>
-
-            <Link
-              href="/author"
-              className="block py-2 text-[#a3e635] font-bold"
-            >
-              Author - Ghulam Muhammad
-            </Link>
+            {showInstall && (
+              <button
+                onClick={async () => {
+                  if (!deferredPrompt) return
+                  deferredPrompt.prompt()
+                  const { outcome } = await deferredPrompt.userChoice
+                  if (outcome === 'accepted') setShowInstall(false)
+                }}
+                className="w-full py-2.5 bg-[#a3e635] text-[#1b4d3e] rounded-full font-bold mb-2"
+              >
+                Install App
+              </button>
+            )}
+            <Link href="/" className="block py-2 text-white font-bold">Home</Link>
+            <Link href="/protected-200-unit-calculator" className="block py-2 text-white/80">Protected 200 Calculator</Link>
+            <Link href="/bill-tax-decoder" className="block py-2 text-white/80">Bill Tax Decoder</Link>
+            <Link href="/solar-net-billing-calculator" className="block py-2 text-white/80">Solar Net Billing 2026</Link>
+            <Link href="/rozana-budget-planner" className="block py-2 text-white/80">Rozana Budget Planner</Link>
+            <Link href="/about-us" className="block py-2 text-white/80">About Us</Link>
+            <Link href="/author" className="block py-2 text-[#a3e635] font-bold">Author - Ghulam Muhammad</Link>
           </div>
         )}
       </header>
@@ -177,134 +167,40 @@ export default function Layout({ children }) {
           <div className="grid md:grid-cols-[1.5fr_1fr_1fr] gap-8">
             <div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#a3e635] flex items-center justify-center text-[#1b4d3e] font-black">
-                  B
-                </div>
-
+                <div className="w-8 h-8 rounded-full bg-[#a3e635] flex items-center justify-center text-[#1b4d3e] font-black">B</div>
                 <span className="font-bold">BijliBill.pk</span>
-
-                <span className="text-xs bg-white/10 px-2 py-0.5 rounded-full">
-                  2026 Edition
-                </span>
+                <span className="text-xs bg-white/10 px-2 py-0.5 rounded-full">2026 Edition</span>
               </div>
-
               <p className="mt-4 text-sm leading-relaxed opacity-70">
-                BijliBill.pk is a privately owned informational and utility
-                platform, and is NOT affiliated, authorized, endorsed by, or
-                in any way officially connected with the Government of
-                Pakistan, NEPRA, LESCO, MEPCO, IESCO, K-Electric, or any other
-                official power distribution companies (DISCOs). All
-                calculations are for informational purposes and are based on
-                publicly available tariff information. For official bills,
-                refer to bill.pitc.com.pk or your DISCO&apos;s official
-                website. We do not collect reference numbers or personal
-                data. Emails: info@bijlibill.pk / contact@bijlibill.pk
+                BijliBill.pk is a privately owned informational and utility platform, and is NOT affiliated, authorized, endorsed by, or in any way officially connected with the 【entity-Government of Pakistan¦canonical_name=Government of Pakistan】, NEPRA, LESCO, MEPCO, IESCO, K-Electric, or any other official power distribution companies (DISCOs). All calculations are for informational purposes and are based on publicly available tariff information. For official bills, refer to bill.pitc.com.pk or your DISCO&apos;s official website. We do not collect reference numbers or personal data. Emails: info@bijlibill.pk / contact@bijlibill.pk
               </p>
-
-              <p className="mt-3 text-xs opacity-50">
-                Independently developed • No personal data stored •
-                Informational calculations • Built and reviewed by Ghulam
-                Muhammad
-              </p>
+              <p className="mt-3 text-xs opacity-50">Independently developed • No personal data stored • Informational calculations • Built and reviewed by Ghulam Muhammad</p>
             </div>
-
             <div>
               <h4 className="font-bold text-base">Core Tools</h4>
-
               <div className="mt-3 space-y-2 text-sm opacity-70">
-                <Link
-                  href="/protected-200-unit-calculator"
-                  className="block hover:text-[#a3e635]"
-                >
-                  Protected 200 Calculator
-                </Link>
-
-                <Link
-                  href="/bill-tax-decoder"
-                  className="block hover:text-[#a3e635]"
-                >
-                  Bill Tax Decoder
-                </Link>
-
-                <Link
-                  href="/solar-net-billing-calculator"
-                  className="block hover:text-[#a3e635]"
-                >
-                  Solar Net Billing 2026
-                </Link>
-
-                <Link
-                  href="/rozana-budget-planner"
-                  className="block hover:text-[#a3e635]"
-                >
-                  Rozana Budget Planner
-                </Link>
-
-                <Link
-                  href="/author"
-                  className="block hover:text-[#a3e635] text-[#a3e635] font-bold"
-                >
-                  Author Profile
-                </Link>
+                <Link href="/protected-200-unit-calculator" className="block hover:text-[#a3e635]">Protected 200 Calculator</Link>
+                <Link href="/bill-tax-decoder" className="block hover:text-[#a3e635]">Bill Tax Decoder</Link>
+                <Link href="/solar-net-billing-calculator" className="block hover:text-[#a3e635]">Solar Net Billing 2026</Link>
+                <Link href="/rozana-budget-planner" className="block hover:text-[#a3e635]">Rozana Budget Planner</Link>
+                <Link href="/author" className="block hover:text-[#a3e635] text-[#a3e635] font-bold">Author Profile</Link>
               </div>
             </div>
-
             <div>
               <h4 className="font-bold text-base">Trust &amp; Legal</h4>
-
               <div className="mt-3 space-y-2 text-sm opacity-70">
-                <Link
-                  href="/about-us"
-                  className="block hover:text-[#a3e635] font-bold"
-                >
-                  About Us
-                </Link>
-
-                <Link
-                  href="/contact-us"
-                  className="block hover:text-[#a3e635] font-bold"
-                >
-                  Contact Us
-                </Link>
-
-                <Link
-                  href="/privacy-policy"
-                  className="block hover:text-[#a3e635] font-bold"
-                >
-                  Privacy Policy
-                </Link>
-
-                <Link
-                  href="/disclaimer"
-                  className="block hover:text-[#a3e635]"
-                >
-                  Disclaimer
-                </Link>
-
-                <p className="pt-2 text-xs opacity-60 leading-relaxed">
-                  Data Sources: NEPRA tariff notifications and PITC, where
-                  applicable. Last Updated: Oct 9, 2026. © 2026 BijliBill.pk -
-                  Independent Utility Platform.
-                </p>
-
-                <p className="text-xs opacity-50">
-                  Made to help Pakistani households understand electricity
-                  bills • No reference number stored
-                </p>
+                <Link href="/about-us" className="block hover:text-[#a3e635] font-bold">About Us</Link>
+                <Link href="/contact-us" className="block hover:text-[#a3e635] font-bold">Contact Us</Link>
+                <Link href="/privacy-policy" className="block hover:text-[#a3e635] font-bold">Privacy Policy</Link>
+                <Link href="/disclaimer" className="block hover:text-[#a3e635]">Disclaimer</Link>
+                <p className="pt-2 text-xs opacity-60 leading-relaxed">Data Sources: NEPRA tariff notifications and PITC, where applicable. Last Updated: Oct 9, 2026. © 2026 BijliBill.pk - Independent Utility Platform.</p>
+                <p className="text-xs opacity-50">Made to help Pakistani households understand electricity bills • No reference number stored</p>
               </div>
             </div>
           </div>
-
           <div className="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between gap-3 text-xs opacity-50">
-            <span>
-              Data Sources: NEPRA tariff notifications and PITC, where applicable.
-              © 2026 BijliBill.pk - Independent Utility Platform.
-            </span>
-
-            <span>
-              Dark mode • Mobile-friendly • Independent platform • Not
-              affiliated with the government
-            </span>
+            <span>Data Sources: NEPRA tariff notifications and PITC, where applicable. © 2026 BijliBill.pk - Independent Utility Platform.</span>
+            <span>Dark mode • Mobile-friendly • Independent platform • Not affiliated with the government</span>
           </div>
         </div>
       </footer>
